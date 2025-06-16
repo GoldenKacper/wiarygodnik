@@ -3,6 +3,8 @@ package org.wiarygodnik.credabilityservice.presentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.wiarygodnik.credabilityservice.application.UrlContent;
@@ -29,4 +31,12 @@ public class CredabilityController {
         List<String> urls = urlService.handleUrlContent(new UrlContent(0, "test.url", "test", keywordsList));
         return ResponseEntity.ok(String.join(" ", urls));
     }
+
+    @PostMapping("/findUrlsAndSend/{reportId}")
+    public ResponseEntity<String> findAndSend(@PathVariable int reportId, @RequestBody String keywords) {
+        List<String> keywordsList = Arrays.asList(keywords.split("-"));
+        urlService.handleUrlContent(new UrlContent(reportId, "test.url", "test", keywordsList));
+        return ResponseEntity.ok().build();
+    }
+
 }

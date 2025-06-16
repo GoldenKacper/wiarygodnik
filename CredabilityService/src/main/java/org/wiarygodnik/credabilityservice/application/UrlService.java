@@ -54,7 +54,8 @@ public class UrlService {
                     String encodedUrl = href.substring(href.indexOf("uddg=") + 5);
                     String decodedUrl = URLDecoder.decode(encodedUrl, StandardCharsets.UTF_8);
 
-                    urlsBasedOnKeywords.add(decodedUrl);
+                    String cleanUrl = decodedUrl.split("&rut=")[0];
+                    urlsBasedOnKeywords.add(cleanUrl);
                 }
 
                 if (urlsBasedOnKeywords.size() >= 6) break;

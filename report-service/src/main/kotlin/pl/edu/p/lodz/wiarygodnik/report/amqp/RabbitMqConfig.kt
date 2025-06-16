@@ -17,8 +17,8 @@ class RabbitMQConfig {
 
     companion object {
         const val EXCHANGE_NAME: String = "wiarygodnik.exchange"
-        const val REPORT_CREATION_ORDER_QUEUE: String = "report.creation.order.queue"
-        const val REPORT_CREATED_QUEUE: String = "report.created.queue"
+        const val REPORT_SERVICE_ORDER_QUEUE: String = "report.service.order.queue"
+        const val CREDIBILITY_SERVICE_RESULTS_QUEUE: String = "credibility.service.results.queue"
     }
 
     @Bean
@@ -27,23 +27,23 @@ class RabbitMQConfig {
     }
 
     @Bean
-    fun reportCreationOrderQueue(): Queue {
-        return Queue(REPORT_CREATION_ORDER_QUEUE)
+    fun reportServiceOrderQueue(): Queue {
+        return Queue(REPORT_SERVICE_ORDER_QUEUE)
     }
 
     @Bean
-    fun reportCreatedQueue(): Queue {
-        return Queue(REPORT_CREATED_QUEUE)
+    fun credibilityServiceResultsQueue(): Queue {
+        return Queue(CREDIBILITY_SERVICE_RESULTS_QUEUE)
     }
 
     @Bean
     fun reportCreationOrderBinding(): Binding {
-        return BindingBuilder.bind(reportCreationOrderQueue()).to(exchange()).with("report.creation.order.key")
+        return BindingBuilder.bind(reportServiceOrderQueue()).to(exchange()).with("report.creation.order.key")
     }
 
     @Bean
     fun reportCreatedBinding(): Binding {
-        return BindingBuilder.bind(reportCreatedQueue()).to(exchange()).with("report.created.key")
+        return BindingBuilder.bind(credibilityServiceResultsQueue()).to(exchange()).with("report.created.key")
     }
 
     @Bean

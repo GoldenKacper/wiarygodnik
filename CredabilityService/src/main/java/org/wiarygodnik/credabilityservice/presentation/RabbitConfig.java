@@ -1,5 +1,6 @@
 package org.wiarygodnik.credabilityservice.presentation;
 
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -9,35 +10,34 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 
 @Configuration
 public class RabbitConfig {
 
     public static final String EXCHANGE_NAME = "wiarygodnik.exchange";
-    public static final String QUEUE_CONTENT = "credibility.service.content";
+    public static final String QUEUE_CONTENT = "credibility.service.content.queue";
     public static final String ROUTING_CONTENT = "routing.content";
-    public static final String QUEUE_RESULTS = "credibility.service.results";
+    public static final String QUEUE_RESULTS = "credibility.service.results.queue";
     public static final String ROUTING_RESULTS = "routing.results";
 
     @Bean
-    public DirectExchange exchange() {
-        return new DirectExchange(EXCHANGE_NAME);
+    public TopicExchange exchange() {
+        return new TopicExchange(EXCHANGE_NAME);
     }
 
     @Bean
     public Queue keywordsQueue() {
-        return new Queue(QUEUE_CONTENT, false);
+        return new Queue(QUEUE_CONTENT);
     }
 
     @Bean
     public Queue resultsQueue() {
-        return new Queue(QUEUE_RESULTS, false);
+        return new Queue(QUEUE_RESULTS);
     }
 
     @Bean
-    public Binding contentBinding(@Qualifier("keywordsQueue") Queue urlQueue, DirectExchange exchange) {
+    public Binding contentBinding(@Qualifier("keywordsQueue") Queue urlQueue, TopicExchange exchange) {
         return BindingBuilder
                 .bind(urlQueue)
                 .to(exchange)
@@ -45,7 +45,7 @@ public class RabbitConfig {
     }
 
     @Bean
-    public Binding resultsBinding(@Qualifier("resultsQueue") Queue resultsQueue, DirectExchange exchange) {
+    public Binding resultsBinding(@Qualifier("resultsQueue") Queue resultsQueue, TopicExchange exchange) {
         return BindingBuilder
                 .bind(resultsQueue)
                 .to(exchange)

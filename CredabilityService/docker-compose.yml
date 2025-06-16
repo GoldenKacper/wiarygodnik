@@ -17,7 +17,7 @@ services:
     container_name: credability-db
     restart: always
     ports:
-      - "5432:5432"
+      - "5431:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -37,6 +37,8 @@ services:
       - credability-db
     environment:
       SPRING_PROFILES_ACTIVE: default
+      SPRING_DATASOURCE_URL: jdbc:postgresql://credability-db:5431/credability
+      SPRING_RABBIT_HOST: rabbitmq
 
 volumes:
   postgres_data_credability:

@@ -26,7 +26,7 @@ class ReportService(
 
     fun updateReportContent(reportContent: ReportContent) {
         reportRepository.findByIdOrNull(reportContent.reportId)?.let {
-            it.content = reportContent.content
+            it.content = reportContent.urls.joinToString(separator = "\n")
             reportRepository.save(it)
         }
     }

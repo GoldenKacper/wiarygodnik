@@ -12,10 +12,12 @@ spring:
     url: jdbc:postgresql://localhost:5432/report-db
     username: postgres
     password: postgres
-
   jpa:
     hibernate:
       ddl-auto: create
+
+server:
+  port: 8081
 
 logging:
   logstash:

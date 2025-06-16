@@ -1,18 +1,21 @@
 package pl.edu.p.lodz.wiarygodnik.report.amqp
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.stereotype.Component
-import pl.edu.p.lodz.wiarygodnik.report.amqp.RabbitMQConfig.Companion.REPORT_CREATED_QUEUE
+import pl.edu.p.lodz.wiarygodnik.report.amqp.RabbitMQConfig.Companion.CREDIBILITY_SERVICE_RESULTS_QUEUE
 import pl.edu.p.lodz.wiarygodnik.report.service.ReportService
 import pl.edu.p.lodz.wiarygodnik.report.service.dto.ReportContent
 
 @Component
 class RabbitMQConsumer(private val reportService: ReportService) {
 
-    @RabbitListener(queues = [REPORT_CREATED_QUEUE])
-    fun listen(message: ReportContent) {
+    private val log = KotlinLogging.logger {}
+
+    @RabbitListener(queues = [CREDIBILITY_SERVICE_RESULTS_QUEUE])
+    fun credibilityServiceResultsQueue(message: ReportContent) {
         reportService.updateReportContent(message)
-        println("Received message: $message")
+        log.info { "Received message: $message" }
     }
 
 }
