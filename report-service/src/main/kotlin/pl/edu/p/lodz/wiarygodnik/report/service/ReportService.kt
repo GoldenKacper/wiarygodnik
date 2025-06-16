@@ -32,7 +32,7 @@ class ReportService(
         reportRepository.findByIdOrNull(reportContent.reportId)?.let {
             it.content = reportContent.urls.joinToString(separator = "\n")
             val updatedReport = reportRepository.save(it)
-            log.info { "Initial report persisted to database, reportId: ${updatedReport.id}" }
+            log.info { "Report content updated, reportId: ${updatedReport.id}" }
         }
     }
 
