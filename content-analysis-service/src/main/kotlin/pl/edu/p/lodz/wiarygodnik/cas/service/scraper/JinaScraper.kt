@@ -10,18 +10,21 @@ import pl.edu.p.lodz.wiarygodnik.cas.service.dto.ScrapedWebContent
 
 @Service
 class JinaScraper(
-    private val webClient: WebClient,
+    @Value("\${jina.url}") private val baseUrl: String,
     @Value("\${jina.api-key}") private val apiKey: String
 ): WebScraper {
 
+    private val webClient: WebClient = WebClient.builder().baseUrl(baseUrl).build()
+
     override fun scrape(url: String): ScrapedWebContent = webClient.get()
-        .uri("https://r.jina.ai/$url")
+        .uri { builder -> builder.path(url).build() }
         .header(HttpHeaders.AUTHORIZATION, "Bearer: $apiKey")
         .header("X-Return-Format", "text")
         .accept(MediaType.APPLICATION_JSON)
         .retrieve()
         .bodyToMono(JinaWrapper::class.java)
-        .blockOptional().map { it.data }
+        .blockOptional()
+        .map { it.data }
         .orElseThrow { IllegalStateException("Missing data in Jina.ai API response") }
 
     data class JinaWrapper(val data: ScrapedWebContent)

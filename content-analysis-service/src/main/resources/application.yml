@@ -9,4 +9,10 @@ spring:
           model: "gpt-oss"
 
 jina:
+  url: "https://r.jina.ai"
+  api-key: ""
+
+serpapi:
+  url: "https://serpapi.com"
+  limit: 10
   api-key: ""

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import pl.edu.p.lodz.wiarygodnik.cas.controller.dto.AnalyseRequest
 import pl.edu.p.lodz.wiarygodnik.cas.service.ContentAnalyser
+import pl.edu.p.lodz.wiarygodnik.cas.service.KeywordWebSearcher
 import pl.edu.p.lodz.wiarygodnik.cas.service.WebScraper
 import pl.edu.p.lodz.wiarygodnik.cas.service.dto.ScrapedWebContent
 import pl.edu.p.lodz.wiarygodnik.cas.service.dto.ContentAnalysis
@@ -16,13 +17,15 @@ import pl.edu.p.lodz.wiarygodnik.cas.service.dto.ContentAnalysis
 class AnalysisController(
     private val webScraper: WebScraper,
     private val contentAnalyser: ContentAnalyser,
+    private val keywordWebSearcher: KeywordWebSearcher
 ) {
 
     @PostMapping("/analyse")
-    fun analyze(@RequestBody request: AnalyseRequest): ResponseEntity<ContentAnalysis> {
+    fun analyze(@RequestBody request: AnalyseRequest): ResponseEntity<List<String>> {
         val scrapedWebContent: ScrapedWebContent = webScraper.scrape(request.url)
         val analysis: ContentAnalysis = contentAnalyser.analyse(scrapedWebContent.text)
-        return ResponseEntity.ok(analysis)
+        val urls: List<String> = keywordWebSearcher.searchTopUrls(analysis.keywords)
+        return ResponseEntity.ok(urls)
     }
 
 }
