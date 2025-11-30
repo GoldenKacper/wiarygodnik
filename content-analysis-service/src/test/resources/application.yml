@@ -12,3 +12,12 @@ spring:
   sql:
     init:
       mode: always
+
+jina:
+  url: ""
+  api-key: ""
+
+serpapi:
+  url: ""
+  limit: 1
+  api-key: ""

@@ -2,12 +2,12 @@ services:
 
   content-analysis-service:
     build:
-      context: report-service
+      context: content-analysis-service
     image: report-service:latest
     deploy:
       replicas: 2
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://report-db:5432/report-db
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://report-db:5432/content-analysis-service-db
       - SPRING_RABBITMQ_HOST=rabbitmq
       - LOGGING_LOGSTASH_SERVER=logstash:5000
     networks:

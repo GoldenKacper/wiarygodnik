@@ -31,9 +31,9 @@ class AnalysisProcessor(
     private val producer: RabbitMQProducer
 ) : CoroutineScope {
 
-    override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.IO
-
     private val log = KotlinLogging.logger {}
+
+    override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.IO
 
     fun analyse(url: String): AnalysisEntity {
         val analysisEntity = prepareNewAnalysis(url)
@@ -48,23 +48,26 @@ class AnalysisProcessor(
 
     private fun asyncProcessAnalysis(url: String, analysisEntity: AnalysisEntity) = launch {
         try {
-            log.info { "Analysis [id: ${analysisEntity.id}] for url: $url process started." }
+            log.info { "Analysis for url: $url process started. [id: ${analysisEntity.id}]" }
 
             val scrapedWebContent: ScrapedWebContent = webScraper.scrape(url)
+            log.info { "Analysing content of scraped web content. [id: ${analysisEntity.id}]" }
             val analysis: ContentAnalysis = contentAnalyzer.analyse(scrapedWebContent.text)
 
             switchAnalysisStatus(analysisEntity, COMPARING_SIMILAR_SOURCES)
-            val urls: List<String> = keywordWebSearcher.searchTopUrls(analysis.summarization.keywords)
-            val scrapedSimilarWebContents: List<ScrapedWebContent> = urls.map { webScraper.scrape(it) }
-            val comparison: ContentComparison =
-                contentComparator.compare(analysis.summarization.description, scrapedSimilarWebContents)
+            log.info { "Comparing content of similar web pages. [id: ${analysisEntity.id}]" }
+            val topSimilarUrls: List<String> = keywordWebSearcher.searchTopUrls(analysis.summarization.keywords)
+            val scrapedSimilarWebContents: List<ScrapedWebContent> = topSimilarUrls.map { webScraper.scrape(it) }
+            val comparison: ContentComparison = contentComparator.compare(
+                analysis.summarization.description, scrapedSimilarWebContents
+            )
             switchAnalysisStatus(analysisEntity, COMPLETED)
 
             val result = AnalysisResult(analysisEntity.id, analysis, comparison)
-            log.info { "Analysis [id: ${analysisEntity.id}] for url: $url process finished. Sending result for report generation." }
+            log.info { "Analysis process finished. Sending result for report generation. [id: ${analysisEntity.id}]" }
             producer.sendAnalysis(result)
         } catch (e: Exception) {
-            log.error { "Error while analysing analysis: $e" }
+            log.error { "Error while analysing content [id: ${analysisEntity.id}]: $e" }
             switchAnalysisStatus(analysisEntity, FAILED)
         }
     }
