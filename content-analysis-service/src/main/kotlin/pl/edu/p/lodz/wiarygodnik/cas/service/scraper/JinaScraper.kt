@@ -5,7 +5,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
-import pl.edu.p.lodz.wiarygodnik.cas.model.ScrapedWebContent
+import pl.edu.p.lodz.wiarygodnik.cas.model.dto.ScrapedWebContent
 
 @Service
 class JinaScraper(

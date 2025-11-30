@@ -2,6 +2,20 @@ spring:
   application:
     name: content-analysis-service
 
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/content-analysis-service-db
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: create
+
   ai:
     ollama:
       chat:
@@ -10,9 +24,7 @@ spring:
 
 jina:
   url: "https://r.jina.ai"
-  api-key: ""
 
 serpapi:
   url: "https://serpapi.com"
-  limit: 10
-  api-key: ""
+  limit: 2

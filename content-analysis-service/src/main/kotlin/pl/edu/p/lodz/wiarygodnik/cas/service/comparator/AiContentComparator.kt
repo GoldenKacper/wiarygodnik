@@ -1,17 +1,14 @@
 package pl.edu.p.lodz.wiarygodnik.cas.service.comparator
 
 import org.springframework.stereotype.Component
-import pl.edu.p.lodz.wiarygodnik.cas.service.agent.ContentCleanerAgent
+import pl.edu.p.lodz.wiarygodnik.cas.model.dto.ContentComparison
+import pl.edu.p.lodz.wiarygodnik.cas.model.dto.ContentSummarization
+import pl.edu.p.lodz.wiarygodnik.cas.model.dto.ScrapedWebContent
 import pl.edu.p.lodz.wiarygodnik.cas.service.agent.ContentComparisonAgent
 import pl.edu.p.lodz.wiarygodnik.cas.service.agent.ContentSummarizationAgent
-import pl.edu.p.lodz.wiarygodnik.cas.model.CleanedContent
-import pl.edu.p.lodz.wiarygodnik.cas.model.ContentComparison
-import pl.edu.p.lodz.wiarygodnik.cas.model.ContentSummarization
-import pl.edu.p.lodz.wiarygodnik.cas.model.ScrapedWebContent
 
 @Component
 class AiContentComparator(
-    private val contentCleanerAgent: ContentCleanerAgent,
     private val contentSummarizationAgent: ContentSummarizationAgent,
     private val contentComparisonAgent: ContentComparisonAgent
 ) : ContentComparator {
@@ -28,8 +25,7 @@ class AiContentComparator(
             
         """.trimIndent()
         for (content in similarSourceContents) {
-            val cleanedContent: CleanedContent = contentCleanerAgent.work(content.text)
-            val summarization: ContentSummarization = contentSummarizationAgent.work(cleanedContent.text)
+            val summarization: ContentSummarization = contentSummarizationAgent.work(content.text)
             input += """
                 
                 URL: ${content.url}

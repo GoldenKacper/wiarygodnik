@@ -2,7 +2,7 @@ package pl.edu.p.lodz.wiarygodnik.cas.service.agent
 
 import org.springframework.ai.chat.model.ChatModel
 import org.springframework.stereotype.Component
-import pl.edu.p.lodz.wiarygodnik.cas.model.CleanedContent
+import pl.edu.p.lodz.wiarygodnik.cas.model.dto.CleanedContent
 
 @Component
 class ContentCleanerAgent(chatModel: ChatModel) : AbstractAgent<CleanedContent>(chatModel, CleanedContent::class.java) {

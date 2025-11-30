@@ -2,7 +2,7 @@ package pl.edu.p.lodz.wiarygodnik.cas.service.agent
 
 import org.springframework.ai.chat.model.ChatModel
 import org.springframework.stereotype.Component
-import pl.edu.p.lodz.wiarygodnik.cas.model.ContentComparison
+import pl.edu.p.lodz.wiarygodnik.cas.model.dto.ContentComparison
 
 @Component
 class ContentComparisonAgent(chatModel: ChatModel) :
