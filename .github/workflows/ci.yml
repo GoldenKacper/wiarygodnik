@@ -1,0 +1,47 @@
+name: CI - Build & Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21 (Oracle)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'oracle'
+          java-version: '21'
+
+      # -------- Verify Java installation (diagnostic) --------
+      - name: Check Java version
+        run: java -version
+
+
+      # -------- report-generation-service --------
+      - name: Make gradlew executable (report-generation-service)
+        working-directory: report-generation-service
+        run: chmod +x gradlew
+
+      - name: Build & test report-generation-service
+        working-directory: report-generation-service
+        run: ./gradlew clean test
+
+
+      # -------- content-analysis-service --------
+      - name: Make gradlew executable (content-analysis-service)
+        working-directory: content-analysis-service
+        run: chmod +x gradlew
+
+      - name: Build & test content-analysis-service
+        working-directory: content-analysis-service
+        run: ./gradlew clean test
