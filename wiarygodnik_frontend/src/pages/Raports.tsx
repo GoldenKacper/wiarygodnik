@@ -1,4 +1,3 @@
-import './Home.css'
 import NavBar from "../navbar/NavBar.tsx";
 import {Box, Button, CircularProgress, Divider, Input, Link, Typography} from "@mui/material";
 import theme from "../theme.ts";
@@ -15,7 +14,7 @@ import {sideMenuButton, sourceDot, sourceLink} from "../Style.tsx";
 import {getDomain} from "../common/Scripts.tsx";
 import ArticleIcon from '@mui/icons-material/Article';
 
-function Home() {
+function Raports() {
     const isMobile = useIsMobile();
     const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -229,4 +228,4 @@ function Home() {
     )
 }
 
-export default Home
+export default Raports;

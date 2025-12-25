@@ -1,93 +1,74 @@
-import {useIsMobile} from "../common/UseIsMobile.tsx";
-import {Box, Button} from "@mui/material";
+import { useIsMobile } from "../common/UseIsMobile.tsx";
+import { Box, Button, Typography, AppBar, Toolbar } from "@mui/material";
 import logo from "/logo_full_350_80.png";
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import theme from "../theme.ts";
-import {useNavigate} from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import useKeycloak from "../hooks/useKeycloak.tsx";
 
 type NavBarProps = {
-    menuActive: boolean;
-    setMenuActive: React.Dispatch<React.SetStateAction<boolean>>;
+    menuActive: boolean | undefined;
+    setMenuActive: React.Dispatch<React.SetStateAction<boolean>> | undefined;
 };
 
 function NavBar(props: NavBarProps) {
     const isMobile = useIsMobile();
     const navigate = useNavigate();
+    const location = useLocation();
+    const { authenticated } = useKeycloak();
+
+    function handleHome() {
+        navigate("/")
+    }
 
     function handleUserClick() {
         navigate("/user");
     }
 
     function handleMenuClick() {
-        props.setMenuActive(!props.menuActive);
+        if (props.setMenuActive) {
+            props.setMenuActive(!props.menuActive);
+        }
     }
 
     return (
-        <Box
-            sx={{
-                display: "flex",
-                width: "100vw",
-                height: "100px",
+        <AppBar position="static" color="transparent" elevation={0}>
+            <Toolbar sx={{
+                display: "grid",
+                gridTemplateColumns: "1fr auto 1fr",
                 alignItems: "center",
-                px: isMobile? 0 : 4
-            }}
-        >
-            <Box sx={{ flex: 1, display: "flex", alignItems: "center", width: "70px" }}>
-                {(
-                    <Button aria-label={"menu-button"} onClick={handleMenuClick}>
-                        <MenuOutlinedIcon sx={{ color: theme.palette.primary.main, fontSize: "2rem" }}/>
+                px: isMobile ? 0 : 4
+            }}>
+                <Box sx={{ justifySelf: "start", width: "70px" }}>
+                    {!authenticated || location.pathname !== "/raports" ? null :
+                        <Button aria-label={"menu-button"} onClick={handleMenuClick}>
+                            <MenuOutlinedIcon sx={{ color: theme.palette.primary.main, fontSize: "2rem" }} />
+                        </Button>
+                    }
+                </Box>
+
+                <Box sx={{ justifySelf: "center" }}>
+                    <Button aria-label={"home-button"} disabled={location.pathname === "/"} onClick={handleHome}>
+                        <img
+                            alt="Wiarygodnik"
+                            src={logo}
+                            style={{ height: isMobile ? "50px" : "80px" }}
+                        />
                     </Button>
-                )}
-            </Box>
+                </Box>
 
-            <Box sx={{ flex: 1, display: "flex", justifyContent: "center" }}>
-                <img
-                    alt="Wiarygodnik"
-                    src={logo}
-                    style={{ height: isMobile ? "50px" : "80px" }}
-                />
-            </Box>
+                <Box sx={{ justifySelf: "end", width: "70px" }}>
+                    {authenticated && location.pathname !== "/user" ? (
+                        <Button aria-label={"account-button"} onClick={handleUserClick}>
+                            <AccountCircleOutlinedIcon sx={{ color: theme.palette.primary.main, fontSize: isMobile ? "2rem" : "3rem" }} />
+                        </Button>
+                    ) : null}
+                </Box>
 
-            <Box sx={{ flex: 1, display: "flex", justifyContent: "flex-end", alignItems: "center", width: "70px" }}>
-                <Button aria-label={"account-button"} onClick={handleUserClick}>
-                    <AccountCircleOutlinedIcon sx={{ color: theme.palette.primary.main, fontSize: isMobile ? "2rem" : "3rem" }}/>
-                </Button>
-            </Box>
-        </Box>
+            </Toolbar>
+        </AppBar>
     );
-}
-
-export function NavBarUserPage() {
-    const isMobile = useIsMobile();
-    const navigate = useNavigate();
-
-    function handleHome() {
-        navigate("/")
-    }
-
-    return (
-        <Box
-            sx={{
-                display: "flex",
-                width: "100vw",
-                height: "100px",
-                alignItems: "center",
-                px: 0
-            }}
-        >
-            <Box sx={{ flex: 1, display: "flex", justifyContent: "center" }}>
-                <Button aria-label={"home-button"}>
-                    <img
-                        alt="Wiarygodnik"
-                        src={logo}
-                        style={{ height: isMobile ? "50px" : "80px" }}
-                        onClick={handleHome}
-                    />
-                </Button>
-            </Box>
-        </Box>
-    )
 }
 
 export default NavBar

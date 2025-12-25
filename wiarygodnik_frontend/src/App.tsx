@@ -1,14 +1,12 @@
-import { Routes, Route } from 'react-router-dom'
-import Home from './home/Home'
-import User from "./user/User.tsx";
+import { KeycloakProvider } from './context/KeycloakContext.tsx';
+import AppRouter from './routing/AppRouter.tsx';
 
 function App() {
     return (
-        <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/user" element={<User />} />
-        </Routes>
-    )
+        <KeycloakProvider>
+            <AppRouter />
+        </KeycloakProvider>
+    );
 }
 
 export default App
