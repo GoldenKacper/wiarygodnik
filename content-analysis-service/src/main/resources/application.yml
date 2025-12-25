@@ -25,12 +25,18 @@ spring:
 logging:
   logstash:
     server: "localhost:5000"
+  level:
+    org.springframework.security: DEBUG
 
 jina:
   url: "https://r.jina.ai"
-  api-key: "jina_ba76ef6cf3164b3e9c7f0c2b24d1396drDyP_392jjRXb0VGVeL-jS4PSYao"
 
 serpapi:
   url: "https://serpapi.com"
   limit: 1
-  api-key: "ec03c7acf8d09400d1f24f6bf24180c60b2c6869fb891377b898503260324257"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics

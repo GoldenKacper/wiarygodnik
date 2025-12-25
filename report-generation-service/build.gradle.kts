@@ -4,6 +4,7 @@ plugins {
     id("org.springframework.boot") version "3.5.0"
     id("io.spring.dependency-management") version "1.1.7"
     kotlin("plugin.jpa") version "1.9.25"
+    id("org.sonarqube") version "5.0.0.4638"
 }
 
 group = "pl.edu.p.lodz"
@@ -30,6 +31,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("io.github.oshai:kotlin-logging-jvm:5.1.0")
     implementation("net.logstash.logback:logstash-logback-encoder:7.4")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-logging")
 
     runtimeOnly("org.postgresql:postgresql")
 
@@ -61,4 +64,12 @@ allOpen {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "goldenkacper_Wiarygodnik_report-generation-service")
+        property("sonar.organization", "goldenkacper")
+        property("sonar.host.url", "https://sonarcloud.io")
+    }
 }

@@ -1,0 +1,74 @@
+name: CD - Build & Push Docker Images
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21 (Oracle)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'oracle'
+          java-version: '21'
+
+      # -------- Build JARs --------
+      # Add necessary permissions for gradlew report-generation-service
+      - name: Make gradlew executable (report-generation-service)
+        working-directory: report-generation-service
+        run: chmod +x gradlew
+
+      # Build the report-generation-service (without tests)
+      - name: Build JAR (report-generation-service)
+        working-directory: report-generation-service
+        run: ./gradlew clean build -x test
+
+      # Add necessary permissions for gradlew content-analysis-service
+      - name: Make gradlew executable (content-analysis-service)
+        working-directory: content-analysis-service
+        run: chmod +x gradlew
+
+      # Build the content-analysis-service (without tests)
+      - name: Build JAR (content-analysis-service)
+        working-directory: content-analysis-service
+        run: ./gradlew clean build -x test
+
+      # -------- Docker & Registry --------
+      # Build and push Docker images to GitHub Container Registry
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Build & push Docker image (report-generation-service)
+      - name: Build & push Docker image (report-generation-service)
+        working-directory: report-generation-service
+        run: |
+          docker build \
+            -t ghcr.io/goldenkacper/report-generation-service:latest \
+            -t ghcr.io/goldenkacper/report-generation-service:${{ github.sha }} .
+          docker push ghcr.io/goldenkacper/report-generation-service:latest
+          docker push ghcr.io/goldenkacper/report-generation-service:${{ github.sha }}
+
+      # Build & push Docker image (content-analysis-service)
+      - name: Build & push Docker image (content-analysis-service)
+        working-directory: content-analysis-service
+        run: |
+          docker build \
+            -t ghcr.io/goldenkacper/content-analysis-service:latest \
+            -t ghcr.io/goldenkacper/content-analysis-service:${{ github.sha }} .
+          docker push ghcr.io/goldenkacper/content-analysis-service:latest
+          docker push ghcr.io/goldenkacper/content-analysis-service:${{ github.sha }}
